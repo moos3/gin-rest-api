@@ -29,10 +29,12 @@ func checkHash(password string, hash string) bool {
 }
 
 func generateToken(data common.JSON) (string, error) {
+	region := os.Getenv("REGION")
 	date := time.Now().Add(time.Hour * 24 * 7)
-	token := jwt.NewWithClaims(jwt.SigningMehtodHS256, jwt.MapClaims{
-		"user": data,
-		"exp":  date.Unix(),
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user":   data,
+		"exp":    date.Unix(),
+		"region": region,
 	})
 
 	pwd, _ := os.Getwd()
@@ -127,6 +129,37 @@ func login(c *gin.Context) {
 	})
 }
 
+func usernameAvailability(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+	region := os.Getenv("REGION")
+
+	type RequestBody struct {
+		Username string `json:"username" binding:"required"`
+	}
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	// check existancy
+	var user User
+	if err := db.Where("username = ?", body.Username).First(&user).Error; err != nil {
+		// user not found
+		c.JSON(http.StatusOK, common.JSON{
+			"username": "available",
+			"region":   region,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, common.JSON{
+		"username": "not available",
+		"region":   region,
+	})
+
+}
+
 // check API will renew token when token life is less than 3 days, otherwise, return null for token
 func check(c *gin.Context) {
 	userRaw, ok := c.Get("user")
@@ -136,6 +169,7 @@ func check(c *gin.Context) {
 	}
 
 	user := userRaw.(User)
+	region := os.Getenv("REGION")
 
 	tokenExpire := int64(c.MustGet("token_expire").(float64))
 	now := time.Now().Unix()
@@ -154,7 +188,8 @@ func check(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, common.JSON{
-		"token": nil,
-		"user":  user.Serialize(),
+		"token":  nil,
+		"user":   user.Serialize(),
+		"regoin": region,
 	})
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/moos3/gin-rest-api/lib/common"
 )
 
+// User data model
 type User struct {
 	gorm.Model
 	Username     string
@@ -12,6 +13,7 @@ type User struct {
 	PasswordHash string
 }
 
+// Serialize serializes user data
 func (u *User) Serialize() common.JSON {
 	return common.JSON{
 		"id":           u.ID,
@@ -21,7 +23,7 @@ func (u *User) Serialize() common.JSON {
 }
 
 func (u *User) Read(m common.JSON) {
-	u.ID = unit(m["id"].(float64))
+	u.ID = uint(m["id"].(float64))
 	u.Username = m["username"].(string)
 	u.DisplayName = m["display_name"].(string)
 }

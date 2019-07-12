@@ -11,11 +11,15 @@ import (
 
 )
 
+var region string
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		panic(err)
 	}
+
+	region = os.Getenv("REGION")
 
 	db, _ := database.Initialize()
 
