@@ -355,3 +355,32 @@ func resetPassword(c *gin.Context) {
 
 
 }
+
+// TODO: locateMe a function to see if the user is here, if not locate the user in the other
+// regions
+
+func locateMe(c *gin.Context) {
+	db := c.MustGet("db").(*gorm.DB)
+
+	type RequestBody struct {
+		Username string `json:"username" binding:"required"`
+	}
+
+	var body RequestBody
+	if err := c.BindJSON(&body); err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	// check existancy
+	var user User
+	if err := db.Where("username = ?", body.Username).First(&user).Error; err != nil {
+		// user not found
+		c.JSON(http.StatusBadRequest, common.JSON{
+			"success": false,
+			"message": "username not found"
+		})
+		return
+	}
+
+	
+}
