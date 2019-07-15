@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/jinzhu/gorm"
 	"github.com/moos3/gin-rest-api/lib/common"
 )
@@ -22,8 +20,9 @@ type User struct {
 type ResetPasswordToken struct {
 	gorm.Model
 	Token         string
-	Expiration    time.Time
-	UserID        User `gorm:"foreignkey:UserID"`
+	Expiration    int64
+	User          User `gorm:"foreignkey:UserID"`
+	UserID        uint
 	Claimed       bool
 	RequestedByIP string
 	UsedByIP      string

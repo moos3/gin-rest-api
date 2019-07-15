@@ -2,55 +2,21 @@ package auth
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/moos3/gin-rest-api/database/models"
 	"github.com/moos3/gin-rest-api/lib/common"
-	"golang.org/x/crypto/bcrypt"
-	"github.com/google/uuid"
-
 )
-
-var gdprCountries = []string{"AT", "BE", "HR", "BG", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE",
-	"IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "GB"}
 
 // User is alias for models.User
 type User = models.User
 
-func hash(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	return string(bytes), err
-}
-
-func checkHash(password string, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
-
-func generateJwtToken(data common.JSON) (string, error) {
-	region := os.Getenv("REGION")
-	date := time.Now().Add(time.Hour * 24 * 7)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user":        data,
-		"exp":         date.Unix(),
-		"host_region": region,
-	})
-
-	pwd, _ := os.Getwd()
-	keyPath := pwd + "/jwtsecret.key"
-	key, readErr := ioutil.ReadFile(keyPath)
-	if readErr != nil {
-		return "", readErr
-	}
-	tokenString, err := token.SignedString(key)
-	return tokenString, err
-}
+// ResetPasswordToken is alias for models.ResetPasswordToken
+type ResetPasswordToken = models.ResetPasswordToken
 
 func register(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -74,7 +40,7 @@ func register(c *gin.Context) {
 		return
 	}
 
-	hash, hashErr := hash(body.Password)
+	hash, hashErr := common.Hash(body.Password)
 	if hashErr != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -96,7 +62,7 @@ func register(c *gin.Context) {
 	db.Create(&user)
 
 	serialized := user.Serialize()
-	token, _ := generateJwtToken(serialized)
+	token, _ := common.GenerateJwtToken(serialized)
 	c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 
 	c.JSON(200, common.JSON{
@@ -128,12 +94,12 @@ func changePassword(c *gin.Context) {
 	}
 
 	// check old password
-	if !checkHash(body.OldPasword, user.PasswordHash) {
+	if !common.CheckHash(body.OldPasword, user.PasswordHash) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
-	hash, hashErr := hash(body.NewPassword)
+	hash, hashErr := common.Hash(body.NewPassword)
 	if hashErr != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
@@ -173,13 +139,13 @@ func login(c *gin.Context) {
 		return
 	}
 
-	if !checkHash(body.Password, user.PasswordHash) {
+	if !common.CheckHash(body.Password, user.PasswordHash) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	serialized := user.Serialize()
-	token, _ := generateJwtToken(serialized)
+	token, _ := common.GenerateJwtToken(serialized)
 
 	c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 
@@ -235,7 +201,7 @@ func check(c *gin.Context) {
 	fmt.Println(diff)
 	if diff < 60*60*24*3 {
 		// renew token
-		token, _ := generateJwtToken(user.Serialize())
+		token, _ := common.GenerateJwtToken(user.Serialize())
 		c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 		c.JSON(http.StatusOK, common.JSON{
 			"token":  token,
@@ -252,14 +218,13 @@ func check(c *gin.Context) {
 	})
 }
 
-// This is Forgot password functionality 
-func forgotPassword(c *gin.Context){
+// This is Forgot password functionality
+func forgotPassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
 	}
-
 
 	var body RequestBody
 	if err := c.BindJSON(&body); err != nil {
@@ -272,7 +237,7 @@ func forgotPassword(c *gin.Context){
 		// user not found
 		c.JSON(http.StatusBadRequest, common.JSON{
 			"success": false,
-			"message": "username not found"
+			"message": "username not found",
 		})
 		return
 	}
@@ -285,12 +250,13 @@ func forgotPassword(c *gin.Context){
 	if err != nil {
 		fmt.Println("Failed to make token")
 	}
+
 	r := ResetPasswordToken{
-		Token: id.String(),
-		UserID: user.ID,
+		Token:         id.String(),
+		UserID:        user.ID,
 		RequestedByIP: c.ClientIP(),
-		Claimed: false,
-		Expiration: timesUp.Unix(),
+		Claimed:       false,
+		Expiration:    timesUp.Unix(),
 	}
 
 	db.NewRecord(&r)
@@ -302,9 +268,9 @@ func forgotPassword(c *gin.Context){
 	}
 
 	c.JSON(http.StatusOK, common.JSON{
-		"reset_token": r.Token,
-		"claimed": r.Claimed,
-		"expiration": r.Expiration,
+		"reset_token":  r.Token,
+		"claimed":      r.Claimed,
+		"expiration":   r.Expiration,
 		"requested_by": r.RequestedByIP,
 	})
 }
@@ -314,7 +280,7 @@ func resetPassword(c *gin.Context) {
 
 	type RequestBody struct {
 		Username string `json:"username" binding:"required"`
-		Token string `json:"reset_token" binding:"required"`
+		Token    string `json:"reset_token" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
@@ -329,13 +295,13 @@ func resetPassword(c *gin.Context) {
 		// user not found
 		c.JSON(http.StatusBadRequest, common.JSON{
 			"success": false,
-			"message": "username not found"
+			"message": "username not found",
 		})
 		return
 	}
 
 	var resetToken ResetPasswordToken
-	if err = db.Where("token = ?", body.Token).First(&resetToken).Error; err != nil {
+	if err := db.Where("token = ?", body.Token).First(&resetToken).Error; err != nil {
 		c.JSON(http.StatusBadRequest, common.JSON{
 			"success": false,
 			"message": "token not found",
@@ -346,13 +312,12 @@ func resetPassword(c *gin.Context) {
 	if resetToken.Claimed {
 		c.JSON(http.StatusBadRequest, common.JSON{
 			"success": false,
-			"message": "Token has already been claimed"
+			"message": "Token has already been claimed",
 		})
 	}
 
 	// check if token as expired
-	now := time.Now()
-
+	//now := time.Now()
 
 }
 
@@ -377,10 +342,9 @@ func locateMe(c *gin.Context) {
 		// user not found
 		c.JSON(http.StatusBadRequest, common.JSON{
 			"success": false,
-			"message": "username not found"
+			"message": "username not found",
 		})
 		return
 	}
 
-	
 }
