@@ -8,12 +8,16 @@ require (
 	github.com/codegangsta/gin v0.0.0-20171026143024-cafe2ce98974 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-contrib/cors v1.3.0
+	github.com/gin-contrib/logger v0.0.1
 	github.com/gin-gonic/gin v1.4.0
 	github.com/google/uuid v1.1.1
 	github.com/jinzhu/gorm v1.9.10
 	github.com/joho/godotenv v1.3.0
 	github.com/mattn/go-shellwords v1.0.5 // indirect
 	github.com/pariz/gountries v0.0.0-20171019111738-adb00f6513a3
+	github.com/rs/zerolog v1.14.3
+	github.com/ugorji/go v1.1.7 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
+	gopkg.in/oauth2.v3 v3.10.0
 	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
