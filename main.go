@@ -18,6 +18,20 @@ import (
 
 var region string
 
+// @title Simple Gin Rest API with JWT
+// @version 1.0
+// @description this is a simple web application that supports api versioning, jwt and multi-regional deployments
+
+// @contact.name Moos3
+// @contact.url https://github.com/moos3/gin-rest-api/issues
+// @contact.email github@guthnur.net
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host myapp.guthnur.net
+// @BasePath /api/v1/
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {

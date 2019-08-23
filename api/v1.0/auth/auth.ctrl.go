@@ -18,6 +18,16 @@ type User = models.User
 // ResetPasswordToken is alias for models.ResetPasswordToken
 type ResetPasswordToken = models.ResetPasswordToken
 
+//
+// @Summary Register User
+// @Description user sign up
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+
 func register(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -72,6 +82,17 @@ func register(c *gin.Context) {
 	})
 }
 
+//
+// @Summary Change User password
+// @Description update the users password
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+// @Failure 500 {object} err
+
 func changePassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	type RequestBody struct {
@@ -119,6 +140,17 @@ func changePassword(c *gin.Context) {
 
 }
 
+
+//
+// @Summary Login User password
+// @Description login user and get JWT token
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+
 func login(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 	type RequestBody struct {
@@ -155,6 +187,16 @@ func login(c *gin.Context) {
 	})
 }
 
+//
+// @Summary Check username name availablity
+// @Description see if username has already been taken
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+
 func usernameAvailability(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -183,6 +225,15 @@ func usernameAvailability(c *gin.Context) {
 		"host_region": user.Region,
 	})
 }
+
+//
+// @Summary Check token
+// @Description renew token when token life is less than 3 days, otherwise, return null for token
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 401 {object} err
 
 // check API will renew token when token life is less than 3 days, otherwise, return null for token
 func check(c *gin.Context) {
@@ -217,6 +268,15 @@ func check(c *gin.Context) {
 		"regoin": user.Region,
 	})
 }
+//
+// @Summary Forgot Password
+// @Description generates a reset password token
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 401 {object} err
+// @Failure 500 {object} err
 
 // This is Forgot password functionality
 func forgotPassword(c *gin.Context) {
@@ -275,6 +335,15 @@ func forgotPassword(c *gin.Context) {
 	})
 }
 
+//
+// @Summary Reset Password
+// @Description Takes Reset Password Token and updates given password
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 401 {object} err
+
 func resetPassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
@@ -323,6 +392,15 @@ func resetPassword(c *gin.Context) {
 
 // TODO: locateMe a function to see if the user is here, if not locate the user in the other
 // regions
+//
+// @Summary Locates User
+// @Description checks server to see if user is here
+// @Accept json
+// @Produce json
+// @Param
+// @Success 200 {object} common.JSON
+// @Failure 401 {object} err
+// @Failure 500 {object} err
 
 func locateMe(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)

@@ -10,6 +10,14 @@ import (
 
 var region string
 
+//
+// @Summary Ping
+// @Description ping healthcheck
+
+// @Success 200 {object}
+// @Failure 401 {object} err
+// @Failure 500 {object} err
+
 func ping(c *gin.Context) {
 	region = os.Getenv("REGION")
 

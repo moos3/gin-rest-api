@@ -15,13 +15,23 @@ type User = models.User
 // UserProfile is alias for models.UserProfile
 type UserProfile = models.UserProfile
 
+//
+// @Summary Fetch Profile for a given user
+// @Description get profile by username or user id
+// @Accept json
+// @Produce json
+// @Param some_id path string true "Some ID"
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+
 func fetchProfile(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
 
 	username := c.Param("username")
 	var user User
 	if err := db.Where("username = ?", username).First(&user).Error; err != nil {
-		c.AbortWithStatus(http.StatusNotFound) // user not found
+		c.AbortWithStatus(http.StatusBadRequest) // user not found
 		return
 	}
 
@@ -41,6 +51,16 @@ func fetchProfile(c *gin.Context) {
 	})
 
 }
+
+//
+// @Summary Fetch Profile for a given user
+// @Description get profile by username or user id
+// @Accept json
+// @Produce json
+// @Param some_id path string true "Some ID"
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
 
 func profile(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -73,6 +93,17 @@ func profile(c *gin.Context) {
 	})
 
 }
+
+//
+// @Summary Edit Profile for a given user
+// @Description edit profile by username or user id
+// @Accept json
+// @Produce json
+// @Param some_id path string true "Some ID"
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+// @Failure 401 {object} err
 
 func edit(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -145,6 +176,17 @@ func edit(c *gin.Context) {
 		"action":  true,
 	})
 }
+
+//
+// @Summary Fetch Region for a given user
+// @Description get the region of a user
+// @Accept json
+// @Produce json
+// @Param some_id path string true "Some ID"
+// @Success 200 {object} common.JSON
+// @Failure 404 {object} err
+// @Failure 400 {object} err
+// @Failure 401 {object} err
 
 func getMyRegion(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
