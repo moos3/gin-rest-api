@@ -1,0 +1,16 @@
+basePath: /api/v1/
+host: myapp.guthnur.net
+info:
+  contact:
+    email: github@guthnur.net
+    name: Moos3
+    url: https://github.com/moos3/gin-rest-api/issues
+  description: this is a simple web application that supports api versioning, jwt
+    and multi-regional deployments
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Simple Gin Rest API with JWT
+  version: "1.0"
+paths: {}
+swagger: "2.0"
