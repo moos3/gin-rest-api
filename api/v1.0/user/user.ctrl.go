@@ -1,5 +1,7 @@
 package user
 
+// package user handles non auth related stuff for a user profile
+
 import (
 	"net/http"
 
