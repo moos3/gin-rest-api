@@ -45,7 +45,7 @@ func main() {
 
 	// Add a logger middleware, which:
 	//   - Logs all requests, like a combined access and error log.
-	//   - Logs to stdout.
+	//   - Logs to stdout.	
 	app.Use(logger.SetLogger())
 
 	// Custom logger
@@ -74,6 +74,8 @@ func main() {
 	*/
 	app.Use(cors.Default())
 	app.Use(database.Inject(db))
+	app.Use(middlewares.RequestIdMiddleware())
+	app.Use(middlewares.RevisionMiddleware())
 	app.Use(middlewares.JWTMiddleware())
 	api.ApplyRoutes(app)
 	app.Run(":" + port)
