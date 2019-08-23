@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/moos3/gin-rest-api/api/v1.0/auth"
+	"github.com/moos3/gin-rest-api/api/v1.0/oauth"
 	user "github.com/moos3/gin-rest-api/api/v1.0/user"
 )
 
@@ -34,5 +35,6 @@ func ApplyRoutes(r *gin.RouterGroup) {
 		v1.GET("/ping", ping)
 		auth.ApplyRoutes(v1)
 		user.ApplyRoutes(v1)
+		oauth.ApplyRoutes(v1)
 	}
 }

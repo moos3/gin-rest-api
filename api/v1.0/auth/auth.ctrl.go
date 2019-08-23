@@ -142,7 +142,6 @@ func changePassword(c *gin.Context) {
 
 }
 
-
 //
 // @Summary Login User password
 // @Description login user and get JWT token
@@ -153,7 +152,6 @@ func changePassword(c *gin.Context) {
 // @Failure 404 {object} err
 // @Failure 400 {object} err
 // @Router /auth/login [post]
-
 
 func login(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -242,6 +240,7 @@ func usernameAvailability(c *gin.Context) {
 // @Router /auth/check [post]
 
 // check API will renew token when token life is less than 3 days, otherwise, return null for token
+// TODO: rename to validate
 func check(c *gin.Context) {
 	userRaw, ok := c.Get("user")
 	if !ok {
@@ -271,9 +270,10 @@ func check(c *gin.Context) {
 	c.JSON(http.StatusOK, common.JSON{
 		"token":  nil,
 		"user":   user.Serialize(),
-		"regoin": user.Region,
+		"region": user.Region,
 	})
 }
+
 //
 // @Summary Forgot Password
 // @Description generates a reset password token
@@ -351,7 +351,6 @@ func forgotPassword(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 401 {object} err
 // @Router /auth/resetpass [post]
-
 
 func resetPassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
