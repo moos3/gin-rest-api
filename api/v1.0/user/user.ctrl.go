@@ -24,6 +24,7 @@ type UserProfile = models.UserProfile
 // @Success 200 {object} common.JSON
 // @Failure 404 {object} err
 // @Failure 400 {object} err
+// @Router /users/profile/{username} [get]
 
 func fetchProfile(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -61,6 +62,7 @@ func fetchProfile(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 404 {object} err
 // @Failure 400 {object} err
+// @Router /users/me [get]
 
 func profile(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -104,6 +106,7 @@ func profile(c *gin.Context) {
 // @Failure 404 {object} err
 // @Failure 400 {object} err
 // @Failure 401 {object} err
+// @Router /users/profile/edit [post]
 
 func edit(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -187,6 +190,7 @@ func edit(c *gin.Context) {
 // @Failure 404 {object} err
 // @Failure 400 {object} err
 // @Failure 401 {object} err
+// @Router /users/fetch/region [get]
 
 func getMyRegion(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)

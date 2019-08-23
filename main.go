@@ -14,6 +14,12 @@ import (
 	"github.com/gin-contrib/logger"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+
+	"github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+
+	"github.com/moos3/gin-rest-api/docs"
+
 )
 
 var region string
@@ -51,6 +57,14 @@ func main() {
 			NoColor: false,
 		},
 	)
+
+	// programatically set swagger info
+	docs.SwaggerInfo.Title = "Gin Rest API"
+	docs.SwaggerInfo.Description = "This is a simple gin rest api with authentication."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "api.guthnur.net"
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	db, _ := database.Initialize()
 
@@ -91,6 +105,8 @@ func main() {
 	app.Use(middlewares.RequestIdMiddleware())
 	app.Use(middlewares.RevisionMiddleware())
 	app.Use(middlewares.JWTMiddleware())
+	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	api.ApplyRoutes(app)
+
 	app.Run(":" + port)
 }

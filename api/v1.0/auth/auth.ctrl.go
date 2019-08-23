@@ -23,10 +23,11 @@ type ResetPasswordToken = models.ResetPasswordToken
 // @Description user sign up
 // @Accept json
 // @Produce json
-// @Param
+// @Param name path string true
 // @Success 200 {object} common.JSON
 // @Failure 404 {object} err
 // @Failure 400 {object} err
+// @Router /auth/register [post]
 
 func register(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -92,6 +93,7 @@ func register(c *gin.Context) {
 // @Failure 404 {object} err
 // @Failure 400 {object} err
 // @Failure 500 {object} err
+// @Router /auth/change [post]
 
 func changePassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -150,6 +152,8 @@ func changePassword(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 404 {object} err
 // @Failure 400 {object} err
+// @Router /auth/login [post]
+
 
 func login(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -196,6 +200,7 @@ func login(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 404 {object} err
 // @Failure 400 {object} err
+// @Router /check/username [get]
 
 func usernameAvailability(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -234,6 +239,7 @@ func usernameAvailability(c *gin.Context) {
 // @Param
 // @Success 200 {object} common.JSON
 // @Failure 401 {object} err
+// @Router /auth/check [post]
 
 // check API will renew token when token life is less than 3 days, otherwise, return null for token
 func check(c *gin.Context) {
@@ -277,6 +283,7 @@ func check(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 401 {object} err
 // @Failure 500 {object} err
+// @Router /auth/forgot [post]
 
 // This is Forgot password functionality
 func forgotPassword(c *gin.Context) {
@@ -343,6 +350,8 @@ func forgotPassword(c *gin.Context) {
 // @Param
 // @Success 200 {object} common.JSON
 // @Failure 401 {object} err
+// @Router /auth/resetpass [post]
+
 
 func resetPassword(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
@@ -401,6 +410,7 @@ func resetPassword(c *gin.Context) {
 // @Success 200 {object} common.JSON
 // @Failure 401 {object} err
 // @Failure 500 {object} err
+// @Router /auth/locate [get]
 
 func locateMe(c *gin.Context) {
 	db := c.MustGet("db").(*gorm.DB)
