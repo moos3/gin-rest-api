@@ -184,8 +184,10 @@ func login(c *gin.Context) {
 	c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 
 	c.JSON(http.StatusOK, common.JSON{
-		"user":  user.Serialize(),
-		"token": token,
+		"msg":     "logged in succesfully",
+		"success": true,
+		"user":    user.Serialize(),
+		"token":   token,
 	})
 }
 

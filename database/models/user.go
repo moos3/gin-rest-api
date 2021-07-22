@@ -1,39 +1,51 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"time"
+
 	"github.com/moos3/gin-rest-api/lib/common"
+	uuid "github.com/satori/go.uuid"
 )
 
 // User data model
 type User struct {
-	gorm.Model
+	ID           uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Username     string
 	Email        string
 	DisplayName  string
 	PasswordHash string
 	Region       string
 	Verified     bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    *time.Time
 }
 
 // ResetPasswordToken -Password Reset Tokens
 type ResetPasswordToken struct {
-	gorm.Model
+	ID            uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Token         string
 	Expiration    int64
-	User          User `gorm:"foreignkey:UserID"`
-	UserID        uint
+	User          User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID        uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
 	Claimed       bool
 	RequestedByIP string
 	UsedByIP      string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     *time.Time
 }
 
 // JwtToken - This is so we can disable tokens
 type JwtToken struct {
-	gorm.Model
+	ID         uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	TokenSha   string
-	UserID     User `gorm:"foreignkey:UserID"`
+	User       User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID     uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
 	Deactivate bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  *time.Time
 }
 
 // Serialize serializes jwt token record data
@@ -68,7 +80,7 @@ func (u *User) Serialize() common.JSON {
 }
 
 func (u *User) Read(m common.JSON) {
-	u.ID = uint(m["id"].(float64))
+	u.ID = m["id"].(uuid.UUID)
 	u.Username = m["username"].(string)
 	u.DisplayName = m["display_name"].(string)
 	u.Region = m["region"].(string)
