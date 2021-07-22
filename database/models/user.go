@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/jinzhu/gorm"
 	"time"
 
 	"github.com/moos3/gin-rest-api/lib/common"
@@ -77,6 +78,12 @@ func (u *User) Serialize() common.JSON {
 		"region":       u.Region,
 		"email":        u.Email,
 	}
+}
+
+// BeforeCreate will set a UUID rather than numeric ID.
+func (u *User) BeforeCreate(scope *gorm.Scope) error {
+	uuid := uuid.NewV4()
+	return scope.SetColumn("ID", uuid)
 }
 
 func (u *User) Read(m common.JSON) {

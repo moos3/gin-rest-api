@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/moos3/gin-rest-api/database/models"
 	"github.com/moos3/gin-rest-api/lib/common"
+	uuid "github.com/satori/go.uuid"
 )
 
 // User is alias for models.User
@@ -37,6 +37,7 @@ func register(c *gin.Context) {
 		DisplayName string `json:"display_name" binding:"required"`
 		Password    string `json:"password" binding:"required"`
 		Region      string `json:"region" binding:"required"`
+		Email		string `json:"email" binding:"required"`
 	}
 
 	var body RequestBody
@@ -46,7 +47,7 @@ func register(c *gin.Context) {
 	}
 
 	var exists User
-	if err := db.Where("username = ?", body.Username).First(&exists).Error; err == nil {
+	if err := db.Debug().Where("username = ?", body.Username).First(&exists).Error; err == nil {
 		c.AbortWithStatus(http.StatusConflict)
 		return
 	}
@@ -63,8 +64,10 @@ func register(c *gin.Context) {
 	// check the country code here
 
 	user := User{
+		ID: uuid.NewV4(),
 		Username:     body.Username,
 		DisplayName:  body.DisplayName,
+		Email: body.Email,
 		PasswordHash: hash,
 		Region:       body.Region,
 	}
@@ -315,10 +318,7 @@ func forgotPassword(c *gin.Context) {
 	timesUp := now.Add(expireTime)
 
 	// generate one time token
-	id, err := uuid.NewUUID()
-	if err != nil {
-		fmt.Println("Failed to make token")
-	}
+	id := uuid.NewV4()
 
 	r := ResetPasswordToken{
 		Token:         id.String(),
