@@ -34,7 +34,7 @@ func RevisionMiddleware() gin.HandlerFunc {
 // RequestIdMiddleware - for searching logs easier
 func RequestIdMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("X-Request-Id", uuid.NewV4().String())
+		c.Writer.Header().Set("X-Request-Id", uuid.New().String())
 		c.Next()
 	}
 }
