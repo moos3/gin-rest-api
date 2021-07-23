@@ -1,4 +1,4 @@
-package v1
+package apiv1
 
 import (
 	"github.com/gin-gonic/gin"
