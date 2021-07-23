@@ -106,7 +106,6 @@ func main() {
 	app.Use(middlewares.RequestIdMiddleware())
 	app.Use(middlewares.RevisionMiddleware())
 	app.Use(middlewares.JWTMiddleware())
-	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	rootPublic := app.Group("/")
 	{
 		swagURL, err := getBasePath(port)

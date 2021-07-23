@@ -2,18 +2,21 @@ package models
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jinzhu/gorm"
 	"github.com/moos3/gin-rest-api/lib/common"
 )
 
 // Token data model
 type Token struct {
-	gorm.Model
-	Token  string
-	UserID uint
-	User   User `gorm:"foreignkey:UserID"`
+	ID        uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	Token     string
+	User      User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID    uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 // Serialize serializes user data
@@ -25,7 +28,7 @@ func (t *Token) Serialize() common.JSON {
 }
 
 func (t *Token) Read(m common.JSON) {
-	t.ID = uint(m["id"].(float64))
+	t.ID = m["id"].(uuid.UUID)
 	t.Token = m["token"].(string)
 }
 

@@ -1,20 +1,25 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"time"
+
 	"github.com/moos3/gin-rest-api/lib/common"
+	uuid "github.com/satori/go.uuid"
 )
 
 // UserProfile user profile
 type UserProfile struct {
-	gorm.Model
-	Bio            string `sql:"type:text"`
-	User           User   `gorm:"foreignkey:UserID"`
-	UserID         uint
+	ID             uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	Bio            string    `sql:"type:text"`
+	User           User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID         uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
 	TwitterHandle  string
 	FirstName      string
 	LastName       string
 	AvatarImageURL string
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      *time.Time
 }
 
 // Serialize serialize profile data

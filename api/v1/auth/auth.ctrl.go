@@ -37,6 +37,7 @@ func register(c *gin.Context) {
 		DisplayName string `json:"display_name" binding:"required"`
 		Password    string `json:"password" binding:"required"`
 		Region      string `json:"region" binding:"required"`
+		Email		string `json:"email" binding:"required"`
 	}
 
 	var body RequestBody
@@ -184,8 +185,10 @@ func login(c *gin.Context) {
 	c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 
 	c.JSON(http.StatusOK, common.JSON{
-		"user":  user.Serialize(),
-		"token": token,
+		"msg":     "logged in succesfully",
+		"success": true,
+		"user":    user.Serialize(),
+		"token":   token,
 	})
 }
 
@@ -313,10 +316,7 @@ func forgotPassword(c *gin.Context) {
 	timesUp := now.Add(expireTime)
 
 	// generate one time token
-	id, err := uuid.NewUUID()
-	if err != nil {
-		fmt.Println("Failed to make token")
-	}
+	id := uuid.New()
 
 	r := ResetPasswordToken{
 		Token:         id.String(),
