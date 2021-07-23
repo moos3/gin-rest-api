@@ -84,7 +84,7 @@ func (u *User) Serialize() common.JSON {
 // BeforeCreate will set a UUID rather than numeric ID.
 func (u *User) BeforeCreate(scope *gorm.Scope) error {
 	uuid := uuid.New()
-	return scope.SetColumn("ID", uuid)
+	return scope.SetColumn("ID", uuid.String())
 }
 
 func (u *User) Read(m common.JSON) {
