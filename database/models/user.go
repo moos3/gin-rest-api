@@ -4,8 +4,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/moos3/gin-rest-api/lib/common"
-	uuid "github.com/satori/go.uuid"
 )
 
 // User data model
@@ -72,7 +72,7 @@ func (r *ResetPasswordToken) Serialize() common.JSON {
 // Serialize serializes user data
 func (u *User) Serialize() common.JSON {
 	return common.JSON{
-		"id":           u.ID,
+		"id":           u.ID.String(),
 		"username":     u.Username,
 		"display_name": u.DisplayName,
 		"region":       u.Region,
@@ -82,7 +82,7 @@ func (u *User) Serialize() common.JSON {
 
 // BeforeCreate will set a UUID rather than numeric ID.
 func (u *User) BeforeCreate(scope *gorm.Scope) error {
-	uuid := uuid.NewV4()
+	uuid := uuid.New()
 	return scope.SetColumn("ID", uuid)
 }
 
