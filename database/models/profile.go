@@ -3,8 +3,8 @@ package models
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/moos3/gin-rest-api/lib/common"
-	uuid "github.com/satori/go.uuid"
 )
 
 // UserProfile user profile
