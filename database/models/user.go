@@ -40,10 +40,10 @@ type ResetPasswordToken struct {
 
 // JwtToken - This is so we can disable tokens
 type JwtToken struct {
-	ID         uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID         string `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	TokenSha   string
 	User       User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
-	UserID     uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
+	UserID     string `gorm:"type:uuid REFERENCES users(id)"`
 	Deactivate bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

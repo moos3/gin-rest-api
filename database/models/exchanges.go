@@ -2,13 +2,11 @@ package models
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // Exchange data model
 type Exchange struct {
-	ID          uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID          string `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Name        string
 	ApiEndpoint string
 	CreatedAt   time.Time
@@ -18,11 +16,11 @@ type Exchange struct {
 
 // UserExchange - data model
 type UserExchange struct {
-	ID         uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID         string `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	User       User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
-	UserID     uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
+	UserID     string `gorm:"type:uuid REFERENCES users(id)"`
 	Exchange   Exchange  `gorm:"ForeginKey:ExchangeID;AssociationForeignKey:ID"`
-	ExchangeID uuid.UUID `gorm:"type:uuid REFERENCES exchanges(id)"`
+	ExchangeID string `gorm:"type:uuid REFERENCES exchanges(id)"`
 	ApiKey     string
 	ApiToken   string
 	UsedByIP   string
