@@ -3,16 +3,15 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/moos3/gin-rest-api/lib/common"
 )
 
 // UserProfile user profile
 type UserProfile struct {
-	ID             uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
-	Bio            string    `sql:"type:text"`
-	User           User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
-	UserID         uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
+	ID             string `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	Bio            string `sql:"type:text"`
+	User           User   `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID         string `gorm:"type:uuid REFERENCES users(id)"`
 	TwitterHandle  string
 	FirstName      string
 	LastName       string

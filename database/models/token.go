@@ -10,10 +10,10 @@ import (
 
 // Token data model
 type Token struct {
-	ID        uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
+	ID        string `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Token     string
-	User      User      `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
-	UserID    uuid.UUID `gorm:"type:uuid REFERENCES users(id)"`
+	User      User   `gorm:"ForeignKey:UserID;AssociationForeignKey:ID"`
+	UserID    string `gorm:"type:uuid REFERENCES users(id)"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
@@ -28,7 +28,7 @@ func (t *Token) Serialize() common.JSON {
 }
 
 func (t *Token) Read(m common.JSON) {
-	t.ID = m["id"].(uuid.UUID)
+	t.ID = m["id"].(string)
 	t.Token = m["token"].(string)
 }
 
