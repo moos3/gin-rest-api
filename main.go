@@ -77,16 +77,17 @@ func main() {
 	//   - Logs to stdout.
 	app.Use(logger.SetLogger())
 
-	// Custom logger
-	subLog := zerolog.New(os.Stdout).With().
-		Str("foo", "bar").
-		Logger()
-
-	app.Use(logger.SetLogger(logger.Config{
-		Logger:   &subLog,
-		UTC:      true,
-		SkipPath: []string{"/skip"},
-	}))
+	/*
+		// Custom logger
+		subLog := zerolog.New(os.Stdout).With().
+			Str("foo", "bar").
+			Logger()
+		app.Use(logger.SetLogger(logger.Config{
+			Logger:   &subLog,
+			UTC:      true,
+			SkipPath: []string{"/skip"},
+		}))
+	*/
 
 	/*
 		app.Use(cors.New(cors.Config{
