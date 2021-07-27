@@ -91,7 +91,7 @@ func main() {
 
 	/*
 		app.Use(cors.New(cors.Config{
-			AllowOrigins: []string{"https://localhost"},
+			AllowOrigins: []string{"*"},
 			AllowMethods: []string{"PUT", "PATCH", "GET"},
 			AllowHeaders: []string{"Origin"},
 			ExposeHeaders: []string{"Content-Lenght"},

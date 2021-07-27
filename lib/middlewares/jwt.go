@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	jwt "github.com/golang-jwt/jwt"
 	"github.com/moos3/gin-rest-api/database/models"
 	"github.com/moos3/gin-rest-api/lib/common"
 )

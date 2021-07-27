@@ -37,7 +37,7 @@ func register(c *gin.Context) {
 		DisplayName string `json:"display_name" binding:"required"`
 		Password    string `json:"password" binding:"required"`
 		Region      string `json:"region" binding:"required"`
-		Email		string `json:"email" binding:"required"`
+		Email       string `json:"email" binding:"required"`
 	}
 
 	var body RequestBody
@@ -263,17 +263,19 @@ func check(c *gin.Context) {
 		token, _ := common.GenerateJwtToken(user.Serialize())
 		c.SetCookie("token", token, 60*60*24*7, "/", "", false, true)
 		c.JSON(http.StatusOK, common.JSON{
-			"token":  token,
-			"user":   user.Serialize(),
-			"region": user.Region,
+			"success": true,
+			"token":   token,
+			"user":    user.Serialize(),
+			"region":  user.Region,
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, common.JSON{
-		"token":  nil,
-		"user":   user.Serialize(),
-		"region": user.Region,
+		"token":   nil,
+		"success": true,
+		"user":    user.Serialize(),
+		"region":  user.Region,
 	})
 }
 
